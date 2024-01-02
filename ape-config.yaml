@@ -1,0 +1,19 @@
+name: py-minter
+
+plugins:
+  - name: solidity
+  - name: foundry
+
+dependencies:
+ - name: OpenZeppelin
+   github: OpenZeppelin/openzeppelin-contracts
+   version: 5.0.1
+     
+solidity:
+ import_remapping:
+  - "@openzeppelin=OpenZeppelin/5.0.1"
+
+test:
+  mnemonic: test test test test test test test test test test test junk
+  number_of_accounts: 10
+  hd_path: "m/44'/60'/0'/0/{}"
