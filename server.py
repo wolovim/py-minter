@@ -45,6 +45,24 @@ def index():
     return render_template("collections.html", collections=collections)
 
 
+@app.route("/collections/<account>")
+def collections(account):
+    print(f"∆∆∆ {account}")
+    # TODO: scope to account
+    collections = Collection.query.all()
+    serialized_collections = []
+    for collection in collections:
+        c = collection.__dict__
+        data = {
+            "id": c["id"],
+            "contract_address": c["contract_address"],
+            "name": c["name"],
+            "symbol": c["symbol"],
+        }
+        serialized_collections.append(data)
+    return jsonify({"collections": serialized_collections})
+
+
 @app.route("/create_collection", methods=["POST"])
 def create_collection():
     try:
