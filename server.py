@@ -12,6 +12,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+CONTRACT_ABI = json.loads(os.environ.get("FLASK_CONTRACT_ABI"))
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 CORS(app)
@@ -53,11 +55,22 @@ def collections(account):
     serialized_collections = []
     for collection in collections:
         c = collection.__dict__
+
+        # get the holders for each collection
+        contract = w3.eth.contract(address=c["contract_address"], abi=CONTRACT_ABI)
+        total_supply = contract.functions.getNextTokenId().call()
+        holders = []
+        for token_id in range(1, total_supply):
+            owner = contract.functions.ownerOf(token_id).call()
+            print(f"Token ID {token_id}: {owner}")
+            holders.append(owner)
+
         data = {
             "id": c["id"],
             "contract_address": c["contract_address"],
             "name": c["name"],
             "symbol": c["symbol"],
+            "holders": holders,
         }
         serialized_collections.append(data)
     return jsonify({"collections": serialized_collections})
@@ -75,7 +88,7 @@ def create_collection():
 
         contract = w3.eth.contract(
             address=receipt["contractAddress"],
-            abi=json.loads(os.environ.get("FLASK_CONTRACT_ABI")),
+            abi=CONTRACT_ABI,
         )
 
         name = contract.functions.name().call()

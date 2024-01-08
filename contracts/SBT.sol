@@ -38,11 +38,4 @@ contract SoulboundToken is ERC721, ERC721Burnable, Ownable {
     require(ownerOf(tokenId) == _msgSender() || _msgSender() == owner(), "Soulbound: no burn except by owner");
     super._burn(tokenId);
   }
-
-
-  // function _update(address to, uint256 tokenId, address auth) internal virtual override returns (address) {
-    // require(ownerOf(tokenId) == auth || auth == owner(), "Only the contract owner or owner of the token can burn it.");
-    // require(to == address(0), "SOULBOUND!");
-    // super._update(to, tokenId, auth);
-  // }
 }

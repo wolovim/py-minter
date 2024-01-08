@@ -12,12 +12,13 @@ import {
 } from "viem";
 import { foundry } from "viem/chains";
 import "viem/window";
+import MintCollection from "./MintCollection";
 
-const abi = import.meta.env.VITE_CONTRACT_ABI;
-const bytecode = import.meta.env.VITE_CONTRACT_BYTECODE;
+const CONTRACT_ABI = JSON.parse(import.meta.env.VITE_CONTRACT_ABI);
+const CONTRACT_DEPLOY_BYTECODE = import.meta.env.VITE_CONTRACT_BYTECODE;
 const tokenContract = {
-  abi: JSON.parse(abi),
-  bytecode,
+  abi: CONTRACT_ABI,
+  bytecode: CONTRACT_DEPLOY_BYTECODE,
 };
 
 const publicClient = createPublicClient({
@@ -32,6 +33,7 @@ const walletClient = createWalletClient({
 function Example() {
   const [account, setAccount] = useState<Address>();
   const [hash, setHash] = useState<Hash>();
+  const [selectedCollection, setSelectedCollection] = useState<Address>();
   const [collections, setCollections] = useState([]);
   const [receipt, setReceipt] = useState<TransactionReceipt>();
   const [formData, setFormData] = useState({
@@ -68,6 +70,20 @@ function Example() {
     await handlePostRequest(hash);
   };
 
+  const mintToken = async (contractAddress, userAddress) => {
+    if (!account) return;
+    const { request } = await publicClient.simulateContract({
+      account,
+      address: contractAddress,
+      abi: CONTRACT_ABI,
+      functionName: "safeMint",
+      args: [userAddress],
+    });
+    console.log("request: ", request);
+    const x = await walletClient.writeContract(request);
+    console.log("x: ", x);
+  };
+
   const handlePostRequest = async (hash) => {
     try {
       const server_url = "http://localhost:9898/create_collection";
@@ -96,6 +112,7 @@ function Example() {
     if (account) {
       const result = await fetch(`http://localhost:9898/collections/${account}`)
         .then((res) => res.json());
+      console.log("result: ", result.collections);
       setCollections(result.collections);
     } else {
       setCollections([]);
@@ -106,6 +123,9 @@ function Example() {
     (async () => {
       if (account) {
         await fetchCollections();
+        if (collections.length > 0) {
+          setSelectedCollection(collections[0].contract_address);
+        }
       }
     })();
   }, [account]);
@@ -129,11 +149,32 @@ function Example() {
             <div>My Collections</div>
             <div>
               {collections.map((collection) => (
-                <div key={collection.id}>
+                <div
+                  key={collection.id}
+                  onClick={() =>
+                    setSelectedCollection(collection.contract_address)}
+                >
                   <div>ID: {collection.id}</div>
                   <div>Name: {collection.name}</div>
                   <div>Symbol: {collection.symbol}</div>
                   <div>Address: {collection.contract_address}</div>
+                  <div>Holders: {collection.holders.length}</div>
+
+                  {selectedCollection === collection.contract_address && (
+                    <>
+                      <ul>
+                        {collection.holders &&
+                          collection.holders.map((holder) => (
+                            <div key={holder}>{holder}</div>
+                          ))}
+                      </ul>
+
+                      <MintCollection
+                        contractAddress={collection.contract_address}
+                        mintToken={mintToken}
+                      />
+                    </>
+                  )}
                 </div>
               ))}
             </div>
