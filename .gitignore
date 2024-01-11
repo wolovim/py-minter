@@ -11,3 +11,4 @@ __pycache__
 
 # Other
 .DS_Store
+data.sqlite
