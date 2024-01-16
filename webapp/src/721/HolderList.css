@@ -1,0 +1,10 @@
+.holder-list {
+  list-style: none;
+  padding: 0;
+}
+
+.holder-address {
+  font-size: 0.8em;
+  color: #666;
+  margin-top: 0.5em;
+}

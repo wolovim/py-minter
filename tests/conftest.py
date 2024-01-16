@@ -16,3 +16,7 @@ def acct3(accounts):
 @pytest.fixture
 def ss_contract(acct1, project):
     return acct1.deploy(project.SoulboundToken, "Soulbound Token", "SBT", acct1.address)
+
+@pytest.fixture
+def sbt_1155_contract(acct1, project):
+    return acct1.deploy(project.SoulboundToken1155, acct1.address)

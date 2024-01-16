@@ -12,9 +12,10 @@ import {
 } from "viem";
 import { foundry } from "viem/chains";
 import "viem/window";
-import MintCollection from "./MintCollection";
-import DeployCollection from "./DeployCollection";
-import HolderList from "./HolderList";
+import MultiTokenCollectionPage from "./1155/MultiTokenCollectionPage";
+import MintCollection from "./721/MintCollection";
+import DeployCollection from "./721/DeployCollection";
+import HolderList from "./721/HolderList";
 import "./App.css";
 
 const SERVER_URL = "http://localhost:9898/create_collection";
@@ -129,6 +130,12 @@ function App() {
     return (
       <>
         <div>Connected: {account}</div>
+
+        <MultiTokenCollectionPage
+          account={account}
+          walletClient={walletClient}
+          publicClient={publicClient}
+        />
 
         {collections && (
           <>
