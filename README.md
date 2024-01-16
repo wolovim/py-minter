@@ -14,10 +14,7 @@ Front-end: next.js
 - basic solidity contract
 - solidity + OZ ape config
 - fix v5 errors from contract wizard
-
-
-TODO:
-
-- 1155 instead/option
-- new collection creator
-- store and reference collections
+- write SBT 721 and 1155 tokens
+- build script that injects ABI and bytecode into webapp and server
+- UI to deploy and mint tokens
+- server with database to store deployments and token mints

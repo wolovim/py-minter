@@ -51,7 +51,7 @@ function MultiTokenCollectionPage({ account, walletClient, publicClient }) {
       address: contractAddress,
       abi: CONTRACT_ABI,
       functionName: "mint",
-      args: [userAddress, 1, 1, ""], // what happens with the data field?
+      args: [userAddress, 1, 1, ""],
     });
     console.log("request: ", request);
     const hash = await walletClient.writeContract(request);
@@ -128,10 +128,7 @@ function MultiTokenCollectionPage({ account, walletClient, publicClient }) {
   }, [hash]);
 
   return (
-    <>
-      <h3>MultiTokenCollectionPage</h3>
-      <DeployCollection deployContract={deployContract} />
-
+    <div className="collection-page">
       {collections && (
         <>
           <h2>My 1155 Collections</h2>
@@ -163,6 +160,8 @@ function MultiTokenCollectionPage({ account, walletClient, publicClient }) {
         </>
       )}
 
+      <DeployCollection deployContract={deployContract} />
+
       {receipt && (
         <>
           <div>Contract Address: {receipt.contractAddress}</div>
@@ -173,7 +172,7 @@ function MultiTokenCollectionPage({ account, walletClient, publicClient }) {
           </div>
         </>
       )}
-    </>
+    </div>
   );
 }
 
