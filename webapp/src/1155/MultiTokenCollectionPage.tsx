@@ -53,10 +53,9 @@ function MultiTokenCollectionPage({ account, walletClient, publicClient }) {
       functionName: "mint",
       args: [userAddress, 1, 1, ""],
     });
-    console.log("request: ", request);
     const hash = await walletClient.writeContract(request);
-    console.log("hash: ", hash);
-    await storeMint(hash, account, contractAddress);
+    await storeMint(hash, userAddress, contractAddress);
+    await fetchCollections();
   };
 
   const storeMint = async (hash, account, contractAddress) => {
@@ -86,9 +85,6 @@ function MultiTokenCollectionPage({ account, walletClient, publicClient }) {
 
   const storeDeployment = async (hash) => {
     try {
-      const x = await publicClient.getTransactionReceipt({ hash });
-      console.log("x", x);
-
       const response = await fetch(SERVER_URL_DEPLOY, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

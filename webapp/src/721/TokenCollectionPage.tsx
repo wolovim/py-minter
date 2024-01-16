@@ -59,16 +59,12 @@ function TokenCollectionPage({ account, walletClient, publicClient }) {
       functionName: "safeMint",
       args: [userAddress],
     });
-    console.log("request: ", request);
-    const x = await walletClient.writeContract(request);
-    console.log("x: ", x);
+    await walletClient.writeContract(request);
+    await fetchCollections();
   };
 
   const storeDeployment = async (hash) => {
     try {
-      const x = await publicClient.getTransactionReceipt({ hash });
-      console.log("x", x);
-
       const response = await fetch(SERVER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

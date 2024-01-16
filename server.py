@@ -44,6 +44,7 @@ class MultiTokenCollection(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     contract_address = db.Column(db.Integer)
     uri = db.Column(db.Text)
+    holders = db.relationship("MultiTokenHolder", backref="multitokencollection")
 
     def __init__(self, contract):
         self.contract_address = contract["address"]
@@ -160,9 +161,8 @@ def multitokencollections(account):
         # not a simple way to accomplish this unless the contract adds support
         # ...so many just do that.
 
-        holders = MultiTokenHolder.query.filter_by(collection_id=c["id"]).all()
         serialized_holders = []
-        for holder in holders:
+        for holder in collection.holders:
             h = holder.__dict__
             serialized_holders.append(h["account"])
 
@@ -213,6 +213,8 @@ def create_multitoken_holder():
         data = request.get_json()
         print(data)
 
+        # todo: verify that user does own the token
+
         collection = MultiTokenCollection.query.filter_by(
             contract_address=data["contractAddress"]
         ).first()
@@ -220,7 +222,7 @@ def create_multitoken_holder():
         new_holder = {
             "account": data["account"],
             "token_id": data["tokenId"],
-            "collection_id": collection["id"],
+            "collection_id": collection.id,
             "hash": data["hash"],
         }
         db.session.add(MultiTokenHolder(new_holder))

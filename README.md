@@ -4,8 +4,24 @@ User interface for a generic soulbound token creator.
 
 ## Tech stack
 
-Back-end: solidity, flask
-Front-end: next.js
+- Back-end: solidity, flask
+- Front-end: next.js
+
+## Setup
+
+- install deps
+- install foundry/anvil
+- run anvil
+- ape compile
+- ape test
+- ape run build --token 721
+- ape run build --token 1155
+- flask db init
+- flask db migrate -m "init"
+- flask db upgrade
+- python server.py
+- cd webapp && npm i
+- npm run dev
 
 ## Captains log
 
