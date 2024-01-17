@@ -7,12 +7,13 @@ import "@openzeppelin/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/access/Ownable.sol";
 
 contract SoulboundToken1155 is ERC1155, ERC1155Burnable, Ownable, ERC1155Supply {
-  constructor(address initialOwner) ERC1155("") Ownable(initialOwner) {}
+  constructor(address initialOwner, string memory uri) ERC1155(uri) Ownable(initialOwner) {}
 
   function mint(address account, uint256 id, uint256 amount, bytes memory data)
     public
     onlyOwner
   {
+    require(balanceOf(account, id) == 0, "Soulbound: already minted");
     _mint(account, id, amount, data);
   }
   
@@ -23,15 +24,6 @@ contract SoulboundToken1155 is ERC1155, ERC1155Burnable, Ownable, ERC1155Supply 
     _mintBatch(to, ids, amounts, data);
   }
   
-  // function transferFrom(
-  //   address from,
-  //   address to,
-  //   uint256 id,
-  //   uint256 amount
-  // ) public override {
-  //   require(soulboundOwners[id] == from, "Token is soulbound");
-  //   super.transferFrom(from, to, id, amount);
-  // }
   function mintToMany(address[] calldata accounts, uint256 id) external onlyOwner {
     require(accounts.length > 0, "No addresses provided");
     
@@ -39,28 +31,23 @@ contract SoulboundToken1155 is ERC1155, ERC1155Burnable, Ownable, ERC1155Supply 
       _mint(accounts[i], id, 1, "");
     }
   }
-  
-  // function transferFrom(address from, address to, uint256 tokenId, uint256 amount) public virtual override {
-  //   require(from == address(0), "Soulbound: no transfers");
-  //   super.transferFrom(from, to, tokenId, amount);
-  // }
 
-  // function getNextTokenId() external view returns (uint256) {
-  //   return _nextTokenId;
-  // }
-
-  // function approve(address to, uint256 tokenId) public override {
-  //   revert("Soulbound: no approvals");
-  // } 
+  function safeTransferFrom(
+    address from,
+    address to,
+    uint256 id,
+    uint256 amount,
+    bytes memory data
+  ) public override {
+    require(true == false, "Soulbound: no transfers");
+  }
 
   function setApprovalForAll(address operator, bool approved) public override {
     revert("Soulbound: no approvals");
   }
 
-  function burn(uint256 id, uint256 amount) external onlyOwner {
-    // require(ownerOf(tokenId) == _msgSender() || _msgSender() == owner(), "Soulbound: no burn except by owner");
-    // super._burn(tokenId);
-    _burn(msg.sender, id, amount);
+  function burn(address account, uint256 id, uint256 value) public virtual onlyOwner override {
+    _burn(account, id, 1);
   }
 
   // The following functions are overrides required by Solidity.

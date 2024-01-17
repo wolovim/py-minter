@@ -19,4 +19,4 @@ def ss_contract(acct1, project):
 
 @pytest.fixture
 def sbt_1155_contract(acct1, project):
-    return acct1.deploy(project.SoulboundToken1155, acct1.address)
+    return acct1.deploy(project.SoulboundToken1155, acct1.address, "http://test")

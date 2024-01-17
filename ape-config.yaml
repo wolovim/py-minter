@@ -22,3 +22,5 @@ ethereum:
 
 foundry:
   port: 8545
+  base_fee: 1
+  priority_fee: 1
