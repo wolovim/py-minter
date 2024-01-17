@@ -16,9 +16,9 @@ import MintCollection from "./MintCollection";
 import DeployCollection from "./DeployCollection";
 import HolderList from "./HolderList";
 
-const SERVER_URL = "http://localhost:9898/create_collection";
-const CONTRACT_ABI = JSON.parse(import.meta.env.VITE_CONTRACT_ABI);
-const CONTRACT_DEPLOY_BYTECODE = import.meta.env.VITE_CONTRACT_BYTECODE;
+const SERVER_URL = "http://localhost:9898/721";
+const CONTRACT_ABI = JSON.parse(import.meta.env.VITE_721_CONTRACT_ABI);
+const CONTRACT_DEPLOY_BYTECODE = import.meta.env.VITE_721_CONTRACT_BYTECODE;
 const tokenContract = {
   abi: CONTRACT_ABI,
   bytecode: CONTRACT_DEPLOY_BYTECODE,
@@ -65,7 +65,7 @@ function TokenCollectionPage({ account, walletClient, publicClient }) {
 
   const storeDeployment = async (hash) => {
     try {
-      const response = await fetch(SERVER_URL, {
+      const response = await fetch(`${SERVER_URL}/deploy`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ hash }),
@@ -85,7 +85,7 @@ function TokenCollectionPage({ account, walletClient, publicClient }) {
 
   const fetchCollections = async () => {
     if (account) {
-      const result = await fetch(`http://localhost:9898/collections/${account}`)
+      const result = await fetch(SERVER_URL)
         .then((res) => res.json());
       console.log("result: ", result.collections);
       setCollections(result.collections);

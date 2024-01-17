@@ -20,12 +20,12 @@ def cli(token, network):
 
         # NOTE: this adds to the file, not overwrites it
         with open("./webapp/.env.local", "a") as f:
-            f.write(f'VITE_CONTRACT_BYTECODE="{deployment_bytecode}"\n')
-            f.write(f'VITE_CONTRACT_ABI="{json.dumps(abi)}"\n')
+            f.write(f'VITE_721_CONTRACT_BYTECODE="{deployment_bytecode}"\n')
+            f.write(f'VITE_721_CONTRACT_ABI="{json.dumps(abi)}"\n')
 
         # NOTE: this adds to the file, not overwrites it
         with open("./.env", "a") as f:
-            f.write(f"FLASK_CONTRACT_ABI='{json.dumps(abi)}'\n")
+            f.write(f"FLASK_721_CONTRACT_ABI='{json.dumps(abi)}'\n")
     elif token == "1155":
         click.echo("Building 1155 contract...")
         deployment_bytecode = (

@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-CONTRACT_ABI = json.loads(os.environ.get("FLASK_CONTRACT_ABI"))
+CONTRACT_721_ABI = json.loads(os.environ.get("FLASK_721_CONTRACT_ABI"))
 CONTRACT_1155_ABI = json.loads(os.environ.get("FLASK_1155_CONTRACT_ABI"))
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -69,28 +69,20 @@ class MultiTokenHolder(db.Model):
 w3 = Web3(HTTPProvider("http://localhost:8545"))
 
 
-@app.route("/")
-def index():
-    collections = Collection.query.all()
-    return render_template("collections.html", collections=collections)
-
-
 ###############
 ### ERC-721 ###
 ###############
 
 
-@app.route("/collections/<account>")
-def collections(account):
-    print(f"∆∆∆ {account}")
-    # TODO: scope to account
+@app.route("/721")
+def collections():
     collections = Collection.query.all()
     serialized_collections = []
     for collection in collections:
         c = collection.__dict__
 
         # get the holders for each collection
-        contract = w3.eth.contract(address=c["contract_address"], abi=CONTRACT_ABI)
+        contract = w3.eth.contract(address=c["contract_address"], abi=CONTRACT_721_ABI)
         total_supply = contract.functions.getNextTokenId().call()
         holders = []
         for token_id in range(1, total_supply):
@@ -109,8 +101,8 @@ def collections(account):
     return jsonify({"collections": serialized_collections})
 
 
-@app.route("/create_collection", methods=["POST"])
-def create_collection():
+@app.route("/721/deploy", methods=["POST"])
+def deploy_collection():
     try:
         tx_hash = request.get_json()
         receipt = w3.eth.get_transaction_receipt(tx_hash["hash"])
@@ -121,7 +113,7 @@ def create_collection():
 
         contract = w3.eth.contract(
             address=receipt["contractAddress"],
-            abi=CONTRACT_ABI,
+            abi=CONTRACT_721_ABI,
         )
 
         name = contract.functions.name().call()
@@ -147,20 +139,14 @@ def create_collection():
 ################
 
 
-@app.route("/multitoken-collections/<account>")
-def multitokencollections(account):
-    print(f"∆∆∆ {account}")
-    # TODO: scope to account
+@app.route("/1155")
+def multitoken_collections():
     collections = MultiTokenCollection.query.all()
     serialized_collections = []
     for collection in collections:
         c = collection.__dict__
 
-        # get the holders of an erc-1155 collection:
-        # ACTUALLY, pull this from database instead >.<
-        # not a simple way to accomplish this unless the contract adds support
-        # ...so many just do that.
-
+        # no great way to get erc-1155 holders, so pull from db
         serialized_holders = []
         for holder in collection.holders:
             h = holder.__dict__
@@ -176,8 +162,8 @@ def multitokencollections(account):
     return jsonify({"collections": serialized_collections})
 
 
-@app.route("/create_multitokencollection", methods=["POST"])
-def create_multitokencollection():
+@app.route("/1155/deploy", methods=["POST"])
+def deploy_multitoken_collection():
     try:
         tx_hash = request.get_json()
         receipt = w3.eth.get_transaction_receipt(tx_hash["hash"])
@@ -207,8 +193,8 @@ def create_multitokencollection():
         return jsonify({"error": str(e)}), 400
 
 
-@app.route("/multitoken/holders/mint", methods=["POST"])
-def create_multitoken_holder():
+@app.route("/1155/mint", methods=["POST"])
+def mint_multitoken():
     try:
         data = request.get_json()
         print(data)

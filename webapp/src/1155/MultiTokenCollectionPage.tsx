@@ -11,8 +11,7 @@ const tokenContract = {
   abi: CONTRACT_ABI,
   bytecode: CONTRACT_DEPLOY_BYTECODE,
 };
-const SERVER_URL_DEPLOY = "http://localhost:9898/create_multitokencollection";
-const SERVER_URL_MINT = "http://localhost:9898/multitoken/holders/mint";
+const SERVER_URL = "http://localhost:9898/1155";
 
 function MultiTokenCollectionPage({ account, walletClient, publicClient }) {
   const [collections, setCollections] = useState([]);
@@ -22,9 +21,7 @@ function MultiTokenCollectionPage({ account, walletClient, publicClient }) {
 
   const fetchCollections = async () => {
     if (account) {
-      const result = await fetch(
-        `http://localhost:9898/multitoken-collections/${account}`,
-      )
+      const result = await fetch(SERVER_URL)
         .then((res) => res.json());
       console.log("result 1155: ", result.collections);
       setCollections(result.collections);
@@ -60,7 +57,7 @@ function MultiTokenCollectionPage({ account, walletClient, publicClient }) {
 
   const storeMint = async (hash, account, contractAddress) => {
     try {
-      const response = await fetch(SERVER_URL_MINT, {
+      const response = await fetch(`${SERVER_URL}/mint`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -85,7 +82,7 @@ function MultiTokenCollectionPage({ account, walletClient, publicClient }) {
 
   const storeDeployment = async (hash) => {
     try {
-      const response = await fetch(SERVER_URL_DEPLOY, {
+      const response = await fetch(`${SERVER_URL}/deploy`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ hash }),
