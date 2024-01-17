@@ -191,7 +191,7 @@ def create_multitokencollection():
             abi=CONTRACT_1155_ABI,
         )
 
-        uri = ""  # contract.functions.uri().call()
+        uri = contract.functions.uri(1).call()
 
         new_collection = {
             "address": receipt["contractAddress"],

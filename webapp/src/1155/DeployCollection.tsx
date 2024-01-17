@@ -15,7 +15,7 @@ function DeployCollection({ deployContract }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await deployContract();
+    await deployContract(formData.uri);
     setFormData({
       uri: "",
     });

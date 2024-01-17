@@ -26,19 +26,19 @@ function MultiTokenCollectionPage({ account, walletClient, publicClient }) {
         `http://localhost:9898/multitoken-collections/${account}`,
       )
         .then((res) => res.json());
-      console.log("result: ", result.collections);
+      console.log("result 1155: ", result.collections);
       setCollections(result.collections);
     } else {
       setCollections([]);
     }
   };
 
-  const deployContract = async () => {
+  const deployContract = async (uri) => {
     if (!account) return;
     const hash = await walletClient.deployContract({
       ...tokenContract,
       account,
-      args: [account],
+      args: [account, uri],
     });
     setHash(hash);
     await storeDeployment(hash);
@@ -140,6 +140,7 @@ function MultiTokenCollectionPage({ account, walletClient, publicClient }) {
                   setSelectedCollection(collection.contract_address)}
               >
                 <div>{collection.contract_address}</div>
+                <div>URI: {collection.uri}</div>
                 <div>Holders: {collection.holders.length}</div>
                 {selectedCollection === collection.contract_address && (
                   <>
