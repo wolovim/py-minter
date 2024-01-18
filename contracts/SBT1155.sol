@@ -9,6 +9,10 @@ import "@openzeppelin/access/Ownable.sol";
 contract SoulboundToken1155 is ERC1155, ERC1155Burnable, Ownable, ERC1155Supply {
   constructor(address initialOwner, string memory uri) ERC1155(uri) Ownable(initialOwner) {}
 
+   function setURI(string memory newuri) public onlyOwner {
+     _setURI(newuri);
+   }
+
   function mint(address account, uint256 id, uint256 amount, bytes memory data)
     public
     onlyOwner

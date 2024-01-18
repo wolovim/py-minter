@@ -136,6 +136,12 @@ function MultiTokenCollectionPage({ account, walletClient, publicClient }) {
                 onClick={() =>
                   setSelectedCollection(collection.contract_address)}
               >
+                {selectedCollection === collection.contract_address && (
+                  <img
+                    src={collection.metadata.image}
+                    className="collection-image"
+                  />
+                )}
                 <div>{collection.contract_address}</div>
                 <div>URI: {collection.uri}</div>
                 <div>Holders: {collection.holders.length}</div>

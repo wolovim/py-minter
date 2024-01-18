@@ -69,6 +69,11 @@ class MultiTokenHolder(db.Model):
 w3 = Web3(HTTPProvider("http://localhost:8545"))
 
 
+@app.route("/")
+def index():
+    return jsonify({"message": "gm"})
+
+
 ###############
 ### ERC-721 ###
 ###############
@@ -139,6 +144,17 @@ def deploy_collection():
 ################
 
 
+@app.route("/1155/<contract_address>/<token_id>.json")
+def collection_token_metadata(contract_address, token_id):
+    return jsonify(
+        {
+            "name": f"Soulbound Token #{token_id}",
+            "description": f"A soulbound token from a collection at address: {contract_address}",
+            "image": "https://cdn-icons-png.flaticon.com/512/7036/7036357.png",
+        }
+    )
+
+
 @app.route("/1155")
 def multitoken_collections():
     collections = MultiTokenCollection.query.all()
@@ -157,6 +173,7 @@ def multitoken_collections():
             "contract_address": c["contract_address"],
             "uri": c["uri"],
             "holders": serialized_holders,
+            "metadata": collection_token_metadata(c["contract_address"], 1).json,
         }
         serialized_collections.append(data)
     return jsonify({"collections": serialized_collections})

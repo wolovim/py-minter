@@ -55,7 +55,13 @@ def test_overly_large_many_mint(acct1, acct3, sbt_1155_contract):
 
 
 def test_get_uri(sbt_1155_contract):
-    assert sbt_1155_contract.uri(1) == "http://test"
+    assert sbt_1155_contract.uri(1) == "http://test.com/{id}.json"
+
+
+def test_set_uri(acct1, sbt_1155_contract):
+    assert sbt_1155_contract.uri(1) == "http://test.com/{id}.json"
+    sbt_1155_contract.setURI("http://test2.com/{id}.json", sender=acct1)
+    assert sbt_1155_contract.uri(1) == "http://test2.com/{id}.json"
 
 
 def test_token_owner_cannot_burn_token(acct1, acct2, sbt_1155_contract):

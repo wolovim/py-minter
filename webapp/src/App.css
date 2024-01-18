@@ -42,3 +42,7 @@ input {
   border: 1px solid #ccc;
   box-shadow: 0 0 5px #ccc;
 }
+
+.collection-image {
+  max-width: 80px;
+}
